@@ -3,7 +3,22 @@ require 'uri'
 require 'json'
 
 module Api
+  class InvalidCredentials < StandardError; end
+  class NetworkError < StandardError; end
+
   class HttpClient
+    NETWORK_ERRORS = [
+      EOFError,
+      Errno::ECONNREFUSED,
+      Errno::ECONNRESET,
+      Errno::EINVAL,
+      Net::HTTPBadResponse,
+      Net::HTTPHeaderSyntaxError,
+      Net::ProtocolError,
+      Timeout::Error,
+      SocketError,
+    ].freeze
+    
     def initialize(base_url)
       @base_url = URI(base_url)
     end
@@ -24,7 +39,11 @@ module Api
 
     def execute(request)
       response = http.request(request)
+      raise Api::InvalidCredentials, response.body if response.code.to_i == 401
+
       Response.new(response)
+    rescue *NETWORK_ERRORS => error
+      raise Api::NetworkError, error.message
     end
 
     def http
