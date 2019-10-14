@@ -8,3 +8,6 @@ group :test do
   gem 'rspec'
   gem 'webmock'
 end
+
+gem 'dry-types'
+gem 'dry-struct'

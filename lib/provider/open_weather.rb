@@ -12,15 +12,15 @@ module Provider
     end
 
     def format_response(response)
-      weather = response.parsed_body
-      {
-        wind_speed: mps_to_kmh(weather[:wind][:speed]),
-        temperature_degrees: weather[:main][:temp]
-      }
+      json_response = OpenWeatherResponse.new(response.parsed_body)
+      CurrentWeather.new(
+        wind_speed: mps_to_kmh(json_response.wind.speed),
+        temperature_degrees: json_response.main.temp
+      )
     end
 
     def mps_to_kmh(speed)
-      (speed / 1000 * 3600).round(2)
+      (speed.to_f / 1000 * 3600).round
     end
 
     def query_params

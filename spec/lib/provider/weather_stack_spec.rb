@@ -22,10 +22,10 @@ describe Provider::WeatherStack do
       }.to_json
     end
     let(:expected_response) do
-      {
+      Provider::CurrentWeather.new(
         wind_speed: 31,
         temperature_degrees: 22
-      }
+      )
     end
 
     before do

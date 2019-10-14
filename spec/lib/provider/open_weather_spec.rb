@@ -17,10 +17,10 @@ describe Provider::OpenWeather do
       }.to_json
     end
     let(:expected_response) do
-      {
-        wind_speed: 27.72,
+      Provider::CurrentWeather.new(
+        wind_speed: 28,
         temperature_degrees: 15
-      }
+      )
     end
 
     before do

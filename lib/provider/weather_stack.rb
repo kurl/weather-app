@@ -13,11 +13,11 @@ module Provider
     end
 
     def format_response(response)
-      current_weather = response.parsed_body[:current]
-      {
-        wind_speed: current_weather[:wind_speed],
-        temperature_degrees: current_weather[:temperature]
-      }
+      json_response = WeatherStackResponse.new(response.parsed_body)
+      CurrentWeather.new(
+        wind_speed: json_response.current.wind_speed,
+        temperature_degrees: json_response.current.temperature
+      )
     end
 
     def query_params

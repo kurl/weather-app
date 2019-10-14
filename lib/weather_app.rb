@@ -1,4 +1,9 @@
 require 'logger'
+require 'dry-types'
+require 'dry-struct'
+
+require './lib/api/http_client'
+require './lib/provider/types'
 require './lib/provider/base'
 require './lib/provider/weather_stack'
 require './lib/provider/open_weather'

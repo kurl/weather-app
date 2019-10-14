@@ -1,5 +1,3 @@
-require './lib/api/http_client'
-
 module Provider
   class Base
     def initialize(token:, logger:)
