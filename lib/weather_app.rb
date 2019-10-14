@@ -40,12 +40,18 @@ class WeatherApp
   end
 
   def fetch_open_weather
-    self.current_weather = open_weather_data
+    result = open_weather.run
+    return unless result
+
+    self.current_weather = result
     self.last_call = Time.now
   end
 
-  def open_weather_data
-    Provider::OpenWeather.new(token: config[:open_weather]).run
+  def open_weather
+    Provider::OpenWeather.new(
+      token: config[:open_weather],
+      logger: logger
+    )
   end
 
   def buffer_expired?
