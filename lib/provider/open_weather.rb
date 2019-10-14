@@ -2,20 +2,24 @@ require './lib/api/http_client'
 
 module Provider
   class OpenWeather
-    def initialize(token:)
+    def initialize(token:, logger:)
       @base_url = 'http://api.openweathermap.org/'
       @token = token
+      @logger = logger
     end
 
     def run
       client = ::Api::HttpClient.new(base_url)
       response = client.get('/data/2.5/weather', query_params)
       format_response(response)
+    rescue Api::NetworkError => e
+      logger.error("NETWORK ERROR: #{e.message}")
     end
 
     private
 
-    attr_reader :base_url, :token, :city
+    attr_reader :base_url, :token
+    attr_accessor :logger
 
     def format_response(response)
       weather = response.parsed_body

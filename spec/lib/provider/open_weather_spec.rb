@@ -2,7 +2,9 @@ require 'spec_helper'
 
 describe Provider::OpenWeather do
   let(:token) { 'token' }
-  let(:weather_stack) { described_class.new(token: token) }
+  let(:weather_stack) { described_class.new(token: token, logger: logger) }
+  let(:logger) { double(Logger, error: true) }
+
   subject { open_weather }
 
   context '#run - Getting weather in Melbourne' do
@@ -31,5 +33,15 @@ describe Provider::OpenWeather do
     subject { weather_stack.run }
 
     it { is_expected.to eq expected_response }
+
+    context 'NetworkError' do
+      before { stub_request(:get, full_url).to_timeout }
+      let(:error_msg) { 'NETWORK ERROR: execution expired' }
+
+      it 'logs the error and returns nil' do
+        expect(logger).to receive(:error).with(error_msg)
+        expect { subject }.not_to raise_error
+      end
+    end
   end
 end
