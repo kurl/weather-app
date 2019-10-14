@@ -6,18 +6,34 @@ class WeatherApp
   def initialize(config:, city:)
     @config = config
     @city = city
-    @now = Time.now
+    @last_call = Time.now - BUFFER - 1 # expired buffer
+    @current_weather = {}
   end
 
   def run
-    weather_stack.run
+    fetch_weather_stack if buffer_expired?
+
+    current_weather
   end
 
   private
 
-  attr_reader :config
+  attr_reader :config, :city
+  attr_accessor :current_weather, :last_call
 
-  def weather_stack
-    Provider::WeatherStack.new(token: config[:weather_stack], city: 'Melbourne')
+  def fetch_weather_stack
+    self.current_weather = weather_stack_data
+    self.last_call = Time.now
+  end
+
+  def weather_stack_data
+    Provider::WeatherStack.new(
+      token: config[:weather_stack],
+      city: city
+    ).run
+  end
+
+  def buffer_expired?
+    last_call + BUFFER < Time.now
   end
 end

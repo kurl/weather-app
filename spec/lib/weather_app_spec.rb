@@ -9,7 +9,6 @@ describe WeatherApp do
       open_weather_map: 'TOKEN'
     }
   end
-
   let(:weather_app) { described_class.new(config: config, city: city) }
   let(:current_weather) do
     {
@@ -18,15 +17,28 @@ describe WeatherApp do
     }
   end
 
-  context '#run' do
+  describe '#run' do
+    let(:weather_stack) do
+      instance_double(Provider::WeatherStack, run: current_weather)
+    end
     before do
-      allow_any_instance_of(Provider::WeatherStack)
-        .to receive(:run)
-        .and_return(current_weather)
+      allow(Provider::WeatherStack)
+        .to receive(:new)
+        .with(token: 'TOKEN', city: city)
+        .and_return(weather_stack)
     end
 
     subject { weather_app.run }
 
     it { is_expected.to eq current_weather }
+
+    describe 'Buffer' do
+      it 'prevents hitting weather provider multiple times' do
+        weather_app.run
+        weather_app.run
+
+        expect(weather_stack).to have_received(:run).once
+      end
+    end
   end
 end
