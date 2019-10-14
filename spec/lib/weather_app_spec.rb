@@ -37,6 +37,15 @@ describe WeatherApp do
 
         expect(weather_stack).to have_received(:run).once
       end
+
+      it 'resumes after buffer expires' do
+        weather_app.run
+        future_time = Time.now + WeatherApp::BUFFER + 1
+        Time.stub(:now) { future_time }
+        weather_app.run
+
+        expect(weather_stack).to have_received(:run).twice
+      end
     end
   end
 end
