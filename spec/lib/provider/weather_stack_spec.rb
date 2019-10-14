@@ -6,7 +6,7 @@ describe Provider::WeatherStack do
   let(:url) do
     "#{base_url}current?access_key=#{token}&query=melbourne"
   end
-  let(:logger) { double(Logger, error: true) }
+  let(:logger) { double(Logger, error: true, info: true) }
   let(:weather_stack) { described_class.new(token: token, logger: logger) }
   let(:api_response) do
     {

@@ -2,7 +2,8 @@ require 'spec_helper'
 
 RSpec.describe Api::HttpClient do
   let(:base_url) { 'http://weather.com' }
-  let(:http_client) { described_class.new(base_url) }
+  let(:logger) { double(Logger, info: true) }
+  let(:http_client) { described_class.new(base_url, logger: logger) }
   let(:token) { '12345' }
   let(:city) { 'Melbourne' }
   let(:response) { { hello: 'world' }.to_json }

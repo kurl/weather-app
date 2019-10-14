@@ -19,8 +19,9 @@ module Api
       SocketError
     ].freeze
 
-    def initialize(base_url)
+    def initialize(base_url, logger:)
       @base_url = URI(base_url)
+      @logger = logger
     end
 
     def get(endpoint, params = {})
@@ -38,6 +39,7 @@ module Api
     attr_reader :base_url, :logger, :http_options
 
     def execute(request)
+      logger.info "Fetching: #{request.uri.host}"
       response = http.request(request)
       raise Api::InvalidCredentials, response.body if response.code.to_i == 401
 

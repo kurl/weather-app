@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Provider::OpenWeather do
   let(:token) { 'token' }
   let(:open_weather) { described_class.new(token: token, logger: logger) }
-  let(:logger) { double(Logger, error: true) }
+  let(:logger) { double(Logger, error: true, info: true) }
   let(:base_url) { 'http://api.openweathermap.org/' }
   let(:url) do
     "#{base_url}data/2.5/weather?q=melbourne&appid=#{token}&units=metric"
