@@ -9,12 +9,15 @@ describe Provider::WeatherStack do
   context '#run - Getting weather in Melbourne' do
     subject { weather_stack.run }
 
-    let(:full_url) { "http://api.weatherstack.com/current?access_key=#{token}&query=melbourne" }
+    let(:base_url) { 'http://api.weatherstack.com/' }
+    let(:full_url) do
+      "#{base_url}current?access_key=#{token}&query=melbourne"
+    end
     let(:api_response) do
       {
         current: {
           temperature: 22,
-          wind_speed: 31,
+          wind_speed: 31
         }
       }.to_json
     end

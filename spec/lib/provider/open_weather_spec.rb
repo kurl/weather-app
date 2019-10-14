@@ -6,7 +6,10 @@ describe Provider::OpenWeather do
   subject { open_weather }
 
   context '#run - Getting weather in Melbourne' do
-    let(:full_url) { "http://api.openweathermap.org/data/2.5/weather?q=melbourne,AU&appid=#{token}&units=metric" }
+    let(:base_url) { 'http://api.openweathermap.org/' }
+    let(:full_url) do
+      "#{base_url}data/2.5/weather?q=melbourne&appid=#{token}&units=metric"
+    end
     let(:api_response) do
       {
         main: { temp: 15 },
@@ -15,7 +18,7 @@ describe Provider::OpenWeather do
     end
     let(:expected_response) do
       {
-        wind_speed: 7.7,
+        wind_speed: 27.72,
         temperature_degrees: 15
       }
     end

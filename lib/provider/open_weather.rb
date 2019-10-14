@@ -10,24 +10,28 @@ module Provider
     def run
       client = ::Api::HttpClient.new(base_url)
       response = client.get('/data/2.5/weather', query_params)
-      current_weather(response)
+      format_response(response)
     end
 
     private
 
     attr_reader :base_url, :token, :city
 
-    def current_weather(response)
+    def format_response(response)
       weather = response.parsed_body
       {
-        wind_speed: weather[:wind][:speed],
+        wind_speed: mps_to_kmh(weather[:wind][:speed]),
         temperature_degrees: weather[:main][:temp]
       }
     end
 
+    def mps_to_kmh(speed)
+      (speed / 1000 * 3600).round(2)
+    end
+
     def query_params
       {
-        q: 'melbourne,AU',
+        q: 'melbourne',
         appid: token,
         units: 'metric'
       }

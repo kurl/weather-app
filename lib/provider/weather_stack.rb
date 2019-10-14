@@ -13,7 +13,6 @@ module Provider
       response = client.get('/current', query_params)
 
       format_response(response) unless response.parsed_body[:success] == false
-
     rescue Api::NetworkError => e
       logger.error("NETWORK ERROR: #{e.message}")
     end

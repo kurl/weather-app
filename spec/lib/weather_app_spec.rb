@@ -1,15 +1,13 @@
 require 'spec_helper'
-require 'byebug'
 
 describe WeatherApp do
-  let(:city) { 'Melbourne' }
   let(:config) do
     {
       weather_stack: 'TOKEN',
       open_weather_map: 'TOKEN'
     }
   end
-  let(:weather_app) { described_class.new(config: config, city: city) }
+  let(:weather_app) { described_class.new(config: config) }
   let(:current_weather) do
     {
       wind_speed: 30,
@@ -24,7 +22,7 @@ describe WeatherApp do
     before do
       allow(Provider::WeatherStack)
         .to receive(:new)
-        .with(token: 'TOKEN', city: city)
+        .with(token: 'TOKEN', logger: an_instance_of(Logger))
         .and_return(weather_stack)
     end
 

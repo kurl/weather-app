@@ -16,9 +16,9 @@ module Api
       Net::HTTPHeaderSyntaxError,
       Net::ProtocolError,
       Timeout::Error,
-      SocketError,
+      SocketError
     ].freeze
-    
+
     def initialize(base_url)
       @base_url = URI(base_url)
     end
@@ -42,8 +42,8 @@ module Api
       raise Api::InvalidCredentials, response.body if response.code.to_i == 401
 
       Response.new(response)
-    rescue *NETWORK_ERRORS => error
-      raise Api::NetworkError, error.message
+    rescue *NETWORK_ERRORS => e
+      raise Api::NetworkError, e.message
     end
 
     def http

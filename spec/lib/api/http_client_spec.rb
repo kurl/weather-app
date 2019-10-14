@@ -40,7 +40,10 @@ RSpec.describe Api::HttpClient do
 
       context 'does not raise for non successful response' do
         let(:error) { { error: '500' } }
-        before { stub_request(:get, full_url).to_return(status: 500, body: error.to_json) }
+        before do
+          stub_request(:get, full_url)
+            .to_return(status: 500, body: error.to_json)
+        end
 
         it { expect { subject }.not_to raise_error }
         it { is_expected.not_to be_success }
