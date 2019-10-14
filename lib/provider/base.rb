@@ -1,15 +1,9 @@
 module Provider
+  class InvalidResponse < StandardError; end
   class Base
     def initialize(token:, logger:)
       @token = token
       @logger = logger
-    end
-
-    def run
-      yield_with_errors do
-        response = client.get(endpoint, query_params)
-        format_response(response)
-      end
     end
 
     private
@@ -18,9 +12,16 @@ module Provider
     attr_accessor :logger
 
     def yield_with_errors
+      # logger.info "Fetching: #{base_url}"
       yield
     rescue Api::NetworkError => e
-      logger.error("NETWORK ERROR: #{e.message}")
+      logger.error("Network Error: #{e.message}")
+    rescue Api::InvalidCredentials => e
+      logger.error("Invalid Credentials: #{e.message}")
+    rescue InvalidResponse => e
+      logger.error("Invalid Reposne: #{e.message}")
+    rescue Dry::Struct::Error => e
+      logger.error("Bad data: #{e.message}")
     end
 
     def client

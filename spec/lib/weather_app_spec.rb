@@ -36,7 +36,7 @@ describe WeatherApp do
 
     subject { weather_app.run }
 
-    it { is_expected.to eq current_weather }
+    it { is_expected.to eq current_weather.to_json }
     it { expect(open_weather).to_not have_received(:run) }
 
     describe 'Buffer' do
@@ -67,7 +67,7 @@ describe WeatherApp do
 
       context 'OpenWeather is down' do
         let(:open_weather) { instance_double(Provider::OpenWeather, run: nil) }
-        it { is_expected.to eq({}) }
+        it { is_expected.to eq('{}') }
       end
     end
   end

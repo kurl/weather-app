@@ -5,6 +5,13 @@ module Provider
       @base_url = 'http://api.openweathermap.org/'
     end
 
+    def run
+      yield_with_errors do
+        response = client.get(endpoint, query_params)
+        format_response(response)
+      end
+    end
+
     private
 
     def endpoint
@@ -12,6 +19,8 @@ module Provider
     end
 
     def format_response(response)
+      raise InvalidResponse, response.body unless response.success?
+
       json_response = OpenWeatherResponse.new(response.parsed_body)
       CurrentWeather.new(
         wind_speed: mps_to_kmh(json_response.wind.speed),

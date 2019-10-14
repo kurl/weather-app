@@ -6,6 +6,13 @@ module Provider
       @logger = logger
     end
 
+    def run
+      yield_with_errors do
+        response = client.get(endpoint, query_params)
+        format_response(response)
+      end
+    end
+
     private
 
     def endpoint
@@ -13,6 +20,10 @@ module Provider
     end
 
     def format_response(response)
+      if !response.success? || response.parsed_body[:success] == false
+        raise InvalidResponse, response.body
+      end
+
       json_response = WeatherStackResponse.new(response.parsed_body)
       CurrentWeather.new(
         wind_speed: json_response.current.wind_speed,

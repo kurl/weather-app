@@ -22,7 +22,7 @@ class WeatherApp
     fetch_weather_stack if buffer_expired?
     fetch_open_weather if buffer_expired?
 
-    current_weather
+    current_weather.to_hash.to_json
   end
 
   private
