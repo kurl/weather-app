@@ -27,5 +27,12 @@ module Provider
     def client
       Api::HttpClient.new(base_url)
     end
+
+    def validate_response!(response)
+      raise InvalidResponse, response.body unless response.success?
+
+      success = response.parsed_body[:success]
+      raise InvalidResponse, response.body if success == false
+    end
   end
 end

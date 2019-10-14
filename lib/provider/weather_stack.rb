@@ -8,28 +8,18 @@ module Provider
 
     def run
       yield_with_errors do
-        response = client.get(endpoint, query_params)
-        format_response(response)
+        api_response = client.get('/current', query_params)
+        validate_response!(api_response)
+
+        weather_stack = WeatherStackResponse.new(api_response.parsed_body)
+        CurrentWeather.new(
+          wind_speed: weather_stack.current.wind_speed,
+          temperature_degrees: weather_stack.current.temperature
+        )
       end
     end
 
     private
-
-    def endpoint
-      '/current'
-    end
-
-    def format_response(response)
-      if !response.success? || response.parsed_body[:success] == false
-        raise InvalidResponse, response.body
-      end
-
-      json_response = WeatherStackResponse.new(response.parsed_body)
-      CurrentWeather.new(
-        wind_speed: json_response.current.wind_speed,
-        temperature_degrees: json_response.current.temperature
-      )
-    end
 
     def query_params
       {

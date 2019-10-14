@@ -7,26 +7,18 @@ module Provider
 
     def run
       yield_with_errors do
-        response = client.get(endpoint, query_params)
-        format_response(response)
+        api_response = client.get('/data/2.5/weather', query_params)
+        validate_response!(api_response)
+
+        open_weather = OpenWeatherResponse.new(api_response.parsed_body)
+        CurrentWeather.new(
+          wind_speed: mps_to_kmh(open_weather.wind.speed),
+          temperature_degrees: open_weather.main.temp
+        )
       end
     end
 
     private
-
-    def endpoint
-      '/data/2.5/weather'
-    end
-
-    def format_response(response)
-      raise InvalidResponse, response.body unless response.success?
-
-      json_response = OpenWeatherResponse.new(response.parsed_body)
-      CurrentWeather.new(
-        wind_speed: mps_to_kmh(json_response.wind.speed),
-        temperature_degrees: json_response.main.temp
-      )
-    end
 
     def mps_to_kmh(speed)
       (speed.to_f / 1000 * 3600).round
