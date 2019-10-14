@@ -2,12 +2,14 @@ require 'spec_helper'
 
 describe Provider::WeatherStack do
   let(:token) { 'token' }
-  let(:city) { 'Melbourne' }
-  let(:weather_stack) { described_class.new(token: token, city: city) }
+  let(:logger) { double(Logger, error: true) }
+  let(:weather_stack) { described_class.new(token: token, logger: logger) }
   subject { weather_stack }
 
   context '#run - Getting weather in Melbourne' do
-    let(:full_url) { "http://api.weatherstack.com/current?access_key=#{token}&query=#{city}" }
+    subject { weather_stack.run }
+
+    let(:full_url) { "http://api.weatherstack.com/current?access_key=#{token}&query=melbourne" }
     let(:api_response) do
       {
         current: {
@@ -28,8 +30,16 @@ describe Provider::WeatherStack do
         .to_return(status: 200, body: api_response, headers: {})
     end
 
-    subject { weather_stack.run }
-
     it { is_expected.to eq expected_response }
+
+    context 'NetworkError' do
+      before { stub_request(:get, full_url).to_timeout }
+      let(:error_msg) { 'NETWORK ERROR: execution expired' }
+
+      it 'logs the error and returns nil' do
+        expect(logger).to receive(:error).with(error_msg)
+        expect { subject }.not_to raise_error
+      end
+    end
   end
 end
