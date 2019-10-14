@@ -1,25 +1,16 @@
-require './lib/api/http_client'
-
 module Provider
-  class WeatherStack
+  class WeatherStack < Base
     def initialize(token:, logger:)
       @base_url = 'http://api.weatherstack.com/'
       @token = token
       @logger = logger
     end
 
-    def run
-      client = ::Api::HttpClient.new(base_url)
-      response = client.get('/current', query_params)
-
-      format_response(response) unless response.parsed_body[:success] == false
-    rescue Api::NetworkError => e
-      logger.error("NETWORK ERROR: #{e.message}")
-    end
-
     private
 
-    attr_reader :base_url, :token, :logger
+    def endpoint
+      '/current'
+    end
 
     def format_response(response)
       current_weather = response.parsed_body[:current]

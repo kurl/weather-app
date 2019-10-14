@@ -1,4 +1,5 @@
 require 'logger'
+require './lib/provider/base'
 require './lib/provider/weather_stack'
 require './lib/provider/open_weather'
 

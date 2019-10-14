@@ -2,10 +2,8 @@ require 'spec_helper'
 
 describe Provider::OpenWeather do
   let(:token) { 'token' }
-  let(:weather_stack) { described_class.new(token: token, logger: logger) }
+  let(:open_weather) { described_class.new(token: token, logger: logger) }
   let(:logger) { double(Logger, error: true) }
-
-  subject { open_weather }
 
   context '#run - Getting weather in Melbourne' do
     let(:base_url) { 'http://api.openweathermap.org/' }
@@ -30,7 +28,7 @@ describe Provider::OpenWeather do
         .to_return(status: 200, body: api_response, headers: {})
     end
 
-    subject { weather_stack.run }
+    subject { open_weather.run }
 
     it { is_expected.to eq expected_response }
 
