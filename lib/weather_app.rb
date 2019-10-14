@@ -1,4 +1,5 @@
 require './lib/provider/weather_stack'
+require './lib/provider/open_weather'
 
 class WeatherApp
   BUFFER = 3
