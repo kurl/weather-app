@@ -9,5 +9,6 @@ group :test do
   gem 'webmock'
 end
 
-gem 'dry-types'
 gem 'dry-struct'
+gem 'dry-types'
+gem 'sinatra'
