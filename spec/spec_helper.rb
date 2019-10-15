@@ -1,2 +1,3 @@
 require 'webmock/rspec'
-require './lib/weather_app'
+require 'rack/test'
+require './api/v1/app'
