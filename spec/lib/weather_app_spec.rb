@@ -9,10 +9,10 @@ describe WeatherApp do
   end
   let(:weather_app) { described_class.new(config: config) }
   let(:current_weather) do
-    {
+    Provider::CurrentWeather.new(
       wind_speed: 30,
       temperature_degrees: 22
-    }
+    )
   end
 
   describe '#run' do
@@ -36,7 +36,7 @@ describe WeatherApp do
 
     subject { weather_app.run }
 
-    it { is_expected.to eq current_weather.to_json }
+    it { is_expected.to eq current_weather.to_hash.to_json }
     it { expect(open_weather).to_not have_received(:run) }
 
     describe 'Buffer' do

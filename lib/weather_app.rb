@@ -1,3 +1,4 @@
+require 'byebug'
 require 'logger'
 require 'dry-types'
 require 'dry-struct'
@@ -32,7 +33,7 @@ class WeatherApp
 
   def fetch_weather_stack
     result = weather_stack.run
-    return unless result
+    return unless result.is_a?(Provider::CurrentWeather)
 
     self.current_weather = result
     self.last_call = Time.now
@@ -47,7 +48,7 @@ class WeatherApp
 
   def fetch_open_weather
     result = open_weather.run
-    return unless result
+    return unless result.is_a?(Provider::CurrentWeather)
 
     self.current_weather = result
     self.last_call = Time.now
