@@ -1,0 +1,4 @@
+#!/bin/bash
+
+docker build . -t weather-app:latest
+docker run -it weather-app:latest rspec
