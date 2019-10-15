@@ -1,0 +1,8 @@
+#!/bin/bash
+
+docker build . -t weather-app:latest
+docker run  \
+  -p 8080:8080 \
+  -e WEATHER_STACK_TOKEN=$WEATHER_STACK_TOKEN \
+  -e OPEN_WEATHER_TOKEN=$OPEN_WEATHER_TOKEN \
+  -it weather-app:latest

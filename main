@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'sinatra'
 require './lib/weather_app'
 
@@ -8,7 +10,16 @@ config = {
 
 weather_app = WeatherApp.new(config: config)
 
+set :bind, '0.0.0.0'
+set :port, 8080
+
 get '/v1/weather' do
   content_type :json
   weather_app.run
+end
+
+get '/*' do
+  content_type :json
+  status 404
+  { error: 'Not found' }.to_json
 end
