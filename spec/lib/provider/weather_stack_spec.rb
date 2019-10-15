@@ -52,13 +52,13 @@ describe Provider::WeatherStack do
 
         context 'Invalid Response' do
           before { stub_request(:get, url).to_return(status: 422) }
-          it { expect(logger).to receive(:error).with(/Invalid Reposne/) }
+          it { expect(logger).to receive(:error).with(/Invalid Response/) }
         end
 
         context 'Invalid Response' do
           let(:body) { { success: false }.to_json }
           before { stub_request(:get, url).to_return(status: 200, body: body) }
-          it { expect(logger).to receive(:error).with(/Invalid Reposne/) }
+          it { expect(logger).to receive(:error).with(/Invalid Response/) }
         end
 
         context 'Bad data' do
