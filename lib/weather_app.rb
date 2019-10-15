@@ -1,4 +1,3 @@
-require 'byebug'
 require 'logger'
 require 'dry-types'
 require 'dry-struct'
@@ -20,8 +19,8 @@ class WeatherApp
   end
 
   def run
-    fetch_weather_stack if buffer_expired?
-    fetch_open_weather if buffer_expired?
+    retrieve_weather(weather_stack_client) if buffer_expired?
+    retrieve_weather(open_weather_client)  if buffer_expired?
 
     current_weather.to_hash.to_json
   end
@@ -31,30 +30,22 @@ class WeatherApp
   attr_reader :config
   attr_accessor :current_weather, :last_call, :logger
 
-  def fetch_weather_stack
-    result = weather_stack.run
+  def retrieve_weather(provider)
+    result = provider.run
     return unless result.is_a?(Provider::CurrentWeather)
 
     self.current_weather = result
     self.last_call = Time.now
   end
 
-  def weather_stack
+  def weather_stack_client
     Provider::WeatherStack.new(
       token: config[:weather_stack],
       logger: logger
     )
   end
 
-  def fetch_open_weather
-    result = open_weather.run
-    return unless result.is_a?(Provider::CurrentWeather)
-
-    self.current_weather = result
-    self.last_call = Time.now
-  end
-
-  def open_weather
+  def open_weather_client
     Provider::OpenWeather.new(
       token: config[:open_weather],
       logger: logger
